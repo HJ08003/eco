@@ -357,7 +357,9 @@ void initTheta(double* pdTheta_in,Param* params, double* pdTheta) {
 void ecoEStep(Param* params, double* suff) {
 
   int t_samp,n_samp,s_samp,x1_samp,x0_samp,i,j, verbose;
-  double loglik,testdens;
+  // HJ changed this on Mar 13, 2018
+  // double loglik,testdens;
+  double loglik;
   Param* param; setParam* setP; caseParam* caseP;
   setP=params[0].setP;
   verbose=setP->verbose;
@@ -407,7 +409,8 @@ void ecoEStep(Param* params, double* suff) {
       caseP->suff=SS_W2;
       caseP->W[1]=paramIntegration(&SuffExp,param);
       caseP->suff=SS_Test;
-      testdens=paramIntegration(&SuffExp,param);
+      // HJ removed this on Mar 13, 2018
+      // testdens=paramIntegration(&SuffExp,param);
       if (setP->calcLoglik==1 && setP->iter>1) loglik+=getLogLikelihood(param);
 
       //report error E1 if E[W1],E[W2] is not on the tomography line
@@ -567,9 +570,11 @@ void ecoMStepNCAR(double* Suff, double* pdTheta, Param* params) {
   //double[2][2] InvSigma=setP->InvSigma;
   //double[3][3] Sigma3=setP->Sigma3;   /* covariance matrix*/
   //double[3][3] InvSigma3=setP->Sigma3;   /* inverse covariance matrix*/
-  int ii,i,j,verbose,t_samp;
-  verbose=setP->verbose;
-  t_samp=setP->t_samp;
+  // HJ changed the following on Mar 13, 2018
+  // int ii,i,j,verbose,t_samp;
+  // verbose=setP->verbose;
+  // t_samp=setP->t_samp;
+  int ii,i,j;
 
 
   //set E[XW*]
@@ -733,9 +738,11 @@ void ecoMStepNCAR(double* Suff, double* pdTheta, Param* params) {
 void ecoMStepCCAR(double* pdTheta, Param* params) {
   setParam* setP=params[0].setP;
   int k=setP->ccar_nvar;
-  int ii,i,j,verbose,t_samp;
-  verbose=setP->verbose;
-  t_samp=setP->t_samp;
+  // HJ changed this on Mar 13, 2018
+  // int ii,i,j,verbose,t_samp;
+  // verbose=setP->verbose;
+  // t_samp=setP->t_samp;
+  int ii,i,j;
   double **InvSigma=doubleMatrix(2,2);
   double **Z_i=doubleMatrix(k,2);
   double **Z_i_t=doubleMatrix(2,k);

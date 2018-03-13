@@ -34,8 +34,11 @@ void NormConstT(double *t, int n, void *param)
   double *mu=doubleArray(dim);
   double **Sigma=doubleMatrix(dim,dim);
   double *W1,*W1p,*W2,*W2p;
-  double X, Y, rho;
-  double dtemp, inp, pfact;
+  // HJ changed the following on Mar 13, 2018
+  // double X, Y, rho;
+  // double dtemp, inp, pfact;
+  double rho;
+  double dtemp, pfact;
   int imposs;
 
   W1 = doubleArray(n);
@@ -52,14 +55,17 @@ void NormConstT(double *t, int n, void *param)
   Sigma[1][0]=pp->setP->Sigma[1][0];
   rho=Sigma[0][1]/sqrt(Sigma[0][0]*Sigma[1][1]);
   //Rprintf("TESTING: %4g %4g %4g %4g", pp->caseP.mu[0], pp->caseP.mu[1], pp->setP->Sigma[0][0],pp->setP->Sigma[0][1]);
-  X=pp->caseP.X;
-  Y=pp->caseP.Y;
+  // HJ changed the following on Mar 13, 2018
+  // X=pp->caseP.X;
+  // Y=pp->caseP.Y;
   imposs=0;
 
   dtemp=1/(2*M_PI*sqrt(Sigma[0][0]*Sigma[1][1]*(1-rho*rho)));
 
   for (ii=0; ii<n; ii++) {
-    imposs=0; inp=t[ii];
+    // HJ changed this on Mar 13, 2018
+    // imposs=0; inp=t[ii];
+    imposs=0;
     W1[ii]=getW1starFromT(t[ii],pp,&imposs);
     if (!imposs) W2[ii]=getW2starFromT(t[ii],pp,&imposs);
     if (imposs==1) t[ii]=0;
@@ -102,7 +108,9 @@ void SuffExp(double *t, int n, void *param)
   //double Sigma[dim][dim];
   //double InvSigma[dim][dim];
   double *W1,*W1p,*W2,*W2p,*vtemp;
-  double inp,density,pfact,normc;
+  // HJ changed this on Mar 13, 2018
+  // double inp,density,pfact,normc;
+  double density,pfact,normc;
 
   vtemp=doubleArray(dim);
   W1 = doubleArray(n);
@@ -128,7 +136,9 @@ void SuffExp(double *t, int n, void *param)
   imposs=0;
 
   for (ii=0; ii<n; ii++) {
-    imposs=0; inp=t[ii];
+    // HJ changed this on Mar 13, 2018
+    // imposs=0; inp=t[ii];
+    imposs=0;
     W1[ii]=getW1starFromT(t[ii],pp,&imposs);
     if (!imposs) W2[ii]=getW2starFromT(t[ii],pp,&imposs);
     if (imposs==1) t[ii]=0;
@@ -178,17 +188,18 @@ double getLogLikelihood(Param* param) {
 
   } else if (param->caseP.dataType==DPT_Homog_X1 || param->caseP.dataType==DPT_Homog_X0) {
       //Homogenenous data: just do normal likelihood on one dimension
-      double lik,sigma2,val,mu;
-      val = (param->caseP.dataType==DPT_Homog_X1) ? param->caseP.Wstar[0] : param->caseP.Wstar[1];
-      if (!param->setP->ncar) {
-        mu = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[0] : param->setP->pdTheta[1];
-        sigma2 = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[2] : param->setP->pdTheta[3];
-      } else {
-        mu = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[1] : param->setP->pdTheta[2];
-        sigma2 = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[4] : param->setP->pdTheta[5];
-      }
-      lik=(1/(sqrt(2*M_PI*sigma2)))*exp(-(.5/sigma2)*(val - mu)*(val - mu));
-      //return log(lik);
+    // HJ remove the following on Mar 13, 2018
+    // double lik,sigma2,val,mu;
+    // val = (param->caseP.dataType==DPT_Homog_X1) ? param->caseP.Wstar[0] : param->caseP.Wstar[1];
+    // if (!param->setP->ncar) {
+    //  mu = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[0] : param->setP->pdTheta[1];
+    //   sigma2 = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[2] : param->setP->pdTheta[3];
+    // } else {
+    //   mu = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[1] : param->setP->pdTheta[2];
+    //  sigma2 = (param->caseP.dataType==DPT_Homog_X1) ? param->setP->pdTheta[4] : param->setP->pdTheta[5];
+    // }
+    //lik=(1/(sqrt(2*M_PI*sigma2)))*exp(-(.5/sigma2)*(val - mu)*(val - mu));
+    //return log(lik);
       return 0; //fix later
 
   } else if (param->caseP.dataType==DPT_Survey || (param->caseP.Y>=.990 || param->caseP.Y<=.010)) {
