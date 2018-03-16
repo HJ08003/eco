@@ -1,5 +1,4 @@
 #include <stdlib.h> // for NULL
-#include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 
 /* FIXME: 
@@ -34,8 +33,8 @@ static const R_CMethodDef CEntries[] = {
     {NULL, NULL, 0}
 };
 
-void R_init_eco(DllInfo *info)
+void R_init_eco(DllInfo *dll)
 {
-    R_registerRoutines(info, NULL, NULL, NULL, NULL);
-    R_useDynamicSymbols(info, TRUE);
+    R_registerRoutines(dll, CEntries, NULL, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }
